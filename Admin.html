@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Pay’n Receive</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    main { max-width: 600px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.1);}
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, textarea { width: 100%; padding: 10px; margin-top: 5px; }
+    button { margin-top: 20px; padding: 12px 20px; background: #4d148c; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    #logout { float: right; background: #c0392b; }
+  </style>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<main>
+  <h2>Panneau Admin - Pay’n Receive</h2>
+  <div id="authSection">
+    <p>Connectez-vous pour accéder à l’espace d’administration.</p>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Mot de passe" />
+    <button onclick="login()">Connexion</button>
+  </div>
+
+  <div id="adminSection" style="display:none;">
+    <button id="logout" onclick="logout()">Déconnexion</button>
+    <h3>Ajouter un colis</h3>
+    <label>Numéro de suivi</label>
+    <input id="trackingNumber" type="text" />
+    <label>Statut</label>
+    <input id="status" type="text" />
+    <label>Dernière mise à jour</label>
+    <input id="lastUpdate" type="text" placeholder="Ex : 22 mai 2025 à 14h" />
+    <label>Localisation</label>
+    <input id="location" type="text" />
+    <label>Livraison estimée</label>
+    <input id="estimatedDelivery" type="text" />
+
+    <button onclick="addPackage()">Enregistrer</button>
+    <p id="feedback"></p>
+  </div>
+</main>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDBLxpmz1pCvix2l0mW-jAgMDea3E5muAI",
+  authDomain: "paynreceive-b7ee9.firebaseapp.com",
+  projectId: "paynreceive-b7ee9",
+  storageBucket: "paynreceive-b7ee9.firebasestorage.app",
+  messagingSenderId: "931007110605",
+  appId: "1:931007110605:web:7138ac1fd99bd070263884",
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  function login() {
+    const email = document.getElementById("email").value;
+    const pwd = document.getElementById("password").value;
+    auth.signInWithEmailAndPassword(email, pwd)
+      .then(() => {
+        document.getElementById("authSection").style.display = "none";
+        document.getElementById("adminSection").style.display = "block";
+      })
+      .catch(err => alert("Erreur : " + err.message));
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      document.getElementById("authSection").style.display = "block";
+      document.getElementById("adminSection").style.display = "none";
+    });
+  }
+
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById("authSection").style.display = "none";
+      document.getElementById("adminSection").style.display = "block";
+    }
+  });
+
+  function addPackage() {
+    const trackingNumber = document.getElementById("trackingNumber").value;
+    const status = document.getElementById("status").value;
+    const lastUpdate = document.getElementById("lastUpdate").value;
+    const location = document.getElementById("location").value;
+    const estimatedDelivery = document.getElementById("estimatedDelivery").value;
+
+    if (!trackingNumber || !status) {
+      alert("Le numéro de suivi et le statut sont obligatoires.");
+      return;
+    }
+
+    db.collection("packages").doc(trackingNumber).set({
+      trackingNumber,
+      status,
+      lastUpdate,
+      location,
+      estimatedDelivery
+    })
+    .then(() => {
+      document.getElementById("feedback").innerText = "Colis ajouté avec succès.";
+    })
+    .catch(err => {
+      document.getElementById("feedback").innerText = "Erreur : " + err.message;
+    });
+  }
+</script>
+
+</body>
+</html>
