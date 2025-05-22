@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pay’n Receive - Suivi de colis</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<header>
+  <div class="logo">Pay’n Receive</div>
+  <nav>
+    <a href="#">Suivi</a>
+    <a href="#">Services</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>Suivez votre colis avec Pay’n Receive</h1>
+    <p>Entrez votre numéro de suivi pour connaître l’état de votre livraison</p>
+    <div class="tracking-box">
+      <input
+        type="text"
+        id="trackingNumber"
+        placeholder="Numéro de suivi"
+        autocomplete="off"
+        aria-label="Numéro de suivi"
+      />
+      <button id="trackBtn">Suivre</button>
+    </div>
+    <div id="result" role="region" aria-live="polite"></div>
+  </section>
+</main>
+<footer>
+  <div class="footer-content">
+    <p>© 2025 Pay’n Receive. Tous droits réservés.</p>
+    <p><small>Ce site est une reproduction simple du suivi FedEx à usage personnel.</small></p>
+  </div>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
